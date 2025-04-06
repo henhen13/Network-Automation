@@ -79,3 +79,5 @@ ansible-playbook -i hosts playbooks/Switch-South2.yml -l switches
 
 To preview changes without applying them:
 ansible-playbook -i hosts playbooks/Router-North2.yml --check --diff
+
+There is already some hosts in the hosts file and hardcoded into the playbooks, just switch these out with the ones from your enviroment. 
