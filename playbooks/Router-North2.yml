@@ -1,0 +1,42 @@
+- name: Configure HSRP and DHCP on a router
+  hosts: 192.168.99.3
+  gather_facts: no
+  tasks:
+    # Configure HSRP .99
+    - name: Configure HSRP on interface
+      cisco.ios.ios_config:
+        lines:
+          - standby {{ hsrp_group2_99 }} ip {{ hsrp_virtual_ip2_99 }}
+          - standby {{ hsrp_group2_99 }} priority {{ hsrp_priority2_99 }}
+        parents: "interface {{ hsrp_interface2_99 }}"
+
+    # Configure HSRP .10
+    - name: Configure HSRP on the second interface
+      cisco.ios.ios_config:
+        lines:
+          - standby {{ hsrp_group2_10 }} ip {{ hsrp_virtual_ip2_10 }}
+          - standby {{ hsrp_group2_10 }} priority {{ hsrp_priority2_10 }}
+        parents: "interface {{ hsrp_interface2_10 }}"
+
+    # Configure HSRP .98
+    - name: Configure HSRP on the third interface
+      cisco.ios.ios_config:
+        lines:
+          - standby {{ hsrp_group2_98 }} ip {{ hsrp_virtual_ip2_98 }}
+          - standby {{ hsrp_group2_98 }} priority {{ hsrp_priority2_98 }}
+        parents: "interface {{ hsrp_interface2_98 }}"
+
+    # Exclude a range of IP addresses
+    - name: Exclude DHCP address range 1
+      cisco.ios.ios_config:
+        lines:
+          - ip dhcp excluded-address {{ dhcp_excluded_start3 }} {{ dhcp_excluded_end3 }}
+
+    # Configure DHCP pool for VLAN 10
+    - name: Configure DHCP pool for VLAN 10
+      cisco.ios.ios_config:
+        lines:
+          - ip dhcp pool VLAN10
+          - network {{ vlan10_network }} {{ vlan10_mask }}
+          - default-router {{ vlan10_default_router }}
+

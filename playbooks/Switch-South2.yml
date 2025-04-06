@@ -1,0 +1,47 @@
+---
+- name: Configure EtherChannel and VLANs on South Switch
+  hosts: 192.168.98.70
+  gather_facts: no
+  tasks:
+    # Configure EtherChannel interfaces
+    - name: Configure interfaces for EtherChannel
+      cisco.ios.ios_config:
+        lines:
+          - channel-group {{ etherchannel_group }} mode {{ etherchannel_mode }}
+        parents: "interface {{ item }}"
+      loop:
+        - "{{ etherchannel_interface1 }}"
+        - "{{ etherchannel_interface2 }}"
+
+    # Configure the EtherChannel port-channel interface
+    - name: Configure Port-Channel interface
+      cisco.ios.ios_config:
+        lines:
+          - switchport mode trunk
+          - switchport trunk allowed vlan {{ allowed_vlans }}
+        parents: "interface Port-Channel{{ etherchannel_group }}"
+
+    # Configure trunk ports (Fa0/2-3)
+    - name: Configure trunk ports Fa0/2-3
+      cisco.ios.ios_config:
+        lines:
+          - switchport mode trunk
+          - switchport trunk allowed vlan {{ allowed_vlans }}
+        parents: "interface range FastEthernet0/2-3"
+
+    # Configure access VLAN 10 (Fa0/4-12)
+    - name: Configure access VLAN 10 on Fa0/4-12
+      cisco.ios.ios_config:
+        lines:
+          - switchport mode access
+          - switchport access vlan 10
+        parents: "interface range FastEthernet0/4-12"
+
+    # Configure access VLAN 20 (Fa0/13-24)
+    - name: Configure access VLAN 20 on Fa0/13-24
+      cisco.ios.ios_config:
+        lines:
+          - switchport mode access
+          - switchport access vlan 20
+        parents: "interface range FastEthernet0/13-24"
+

@@ -1,0 +1,61 @@
+---
+- name: Configure HSRP on Router 1
+  hosts: 192.168.99.2
+  gather_facts: no
+  tasks:
+    # Configure HSRP for subinterface .10
+    - name: Configure HSRP for VLAN 10
+      cisco.ios.ios_config:
+        lines:
+          - standby {{ hsrp_group_10 }} ip {{ hsrp_virtual_ip_10 }}
+          - standby {{ hsrp_group_10 }} priority {{ hsrp_priority_10 }}
+          - standby {{ hsrp_group_10 }} preempt
+        parents: "interface {{ hsrp_interface_10 }}"
+
+    # Configure HSRP for subinterface .99
+    - name: Configure HSRP for VLAN 99
+      cisco.ios.ios_config:
+        lines:
+          - standby {{ hsrp_group_99 }} ip {{ hsrp_virtual_ip_99 }}
+          - standby {{ hsrp_group_99 }} priority {{ hsrp_priority_99 }}
+          - standby {{ hsrp_group_99 }} preempt
+        parents: "interface {{ hsrp_interface_99 }}"
+
+    # Configure HSRP for subinterface .98
+    - name: Configure HSRP for VLAN 98
+      cisco.ios.ios_config:
+        lines:
+          - standby {{ hsrp_group_98 }} ip {{ hsrp_virtual_ip_98 }}
+          - standby {{ hsrp_group_98 }} priority {{ hsrp_priority_98 }}
+          - standby {{ hsrp_group_98 }} preempt
+        parents: "interface {{ hsrp_interface_98 }}"
+
+    # Exclude a range of IP addresses
+    - name: Exclude DHCP address range 1
+      cisco.ios.ios_config:
+        lines:
+          - ip dhcp excluded-address {{ dhcp_excluded_start1 }} {{ dhcp_excluded_end1 }}
+
+    # Exclude a range of IP addresses
+    - name: Exclude DHCP address range 2
+      cisco.ios.ios_config:
+        lines:
+          - ip dhcp excluded-address {{ dhcp_excluded_start2 }} {{ dhcp_excluded_end2 }}
+
+        # Configure DHCP pool for VLAN 10
+    - name: Configure DHCP pool for VLAN 10
+      cisco.ios.ios_config:
+        lines:
+          - ip dhcp pool VLAN10
+          - network {{ vlan10_network }} {{ vlan10_mask }}
+          - default-router {{ vlan10_default_router }}
+
+    # Configure DHCP pool for VLAN 99
+    - name: Configure DHCP pool for VLAN 99
+      cisco.ios.ios_config:
+        lines:
+          - ip dhcp pool VLAN99
+          - network {{ vlan99_network }} {{ vlan99_mask }}
+          - default-router {{ vlan99_default_router }}
+
+
