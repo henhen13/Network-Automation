@@ -42,4 +42,73 @@ These scripts **assume you're past the initial configuration dialog**. Before ru
 3. Type "no"
 4. Wait until the CLI appears (`Switch>`, `Router>`), then run the script.
 
+## 🤖 Phase 2: Ansible Automation
+After the initial device setup via the Python scripts, this phase uses Ansible to apply complete configurations over SSH.
 
+### 🗂️ Project Structure
+Network-Automation-main/
+├── ansible.cfg               # Ansible configuration file
+├── hosts                     # Inventory file
+├── group_vars/
+│   └── all.yml               # Global variables
+├── playbooks/
+│   ├── Router-North1.yml
+│   ├── Router-North2.yml
+│   └── Switch-South2.yml
+
+### 🛠 Requirements
+
+Make sure Ansible is installed:
+
+```bash
+sudo apt install ansible
+# or
+pip install ansible
+
+Also install the Cisco Ansible collection:
+bashCopyansible-galaxy collection install cisco.ios
+🔧 What the Playbooks Do
+Each playbook configures a device over SSH, automating:
+
+Hostname and banner messages
+Interface descriptions and IP settings
+VLANs and trunking (for switches)
+Routing (for routers)
+NTP, syslog, and SNMP
+Passwords and SSH user settings
+
+🧩 Example Inventory (hosts)
+iniCopy[switches]
+192.168.1.10
+
+[routers]
+192.168.1.1
+192.168.1.2
+📁 Example Group Variables (group_vars/all.yml)
+yamlCopyansible_connection: network_cli
+ansible_network_os: cisco.ios.ios
+ansible_user: admin
+ansible_password: cisco123
+ansible_become: yes
+ansible_become_method: enable
+ansible_become_password: cisco123
+▶️ Running a Playbook
+To run a specific playbook:
+bashCopyansible-playbook -i hosts playbooks/Router-North1.yml
+To target a specific group:
+bashCopyansible-playbook -i hosts playbooks/Switch-South2.yml -l switches
+To preview changes without applying them:
+bashCopyansible-playbook -i hosts playbooks/Router-North2.yml --check --diff
+🔄 Full Automation Flow
+
+Use Python script to enable SSH on the device via console.
+Add the device IP to the hosts inventory file.
+Set login credentials in group_vars/all.yml.
+Run your Ansible playbook.
+Done! 🎉
+
+🧠 Tips
+
+Test SSH access manually before running playbooks.
+Keep configs modular with roles (optional for bigger setups).
+You can run multiple playbooks in one go or create a master playbook.
