@@ -1,61 +1,45 @@
-🐍 Python SSH Scripts for Network Device Configuration
-This project includes two Python scripts designed to automate the configuration of network devices (routers and switches) via a console cable. These scripts are useful for initial SSH setup and interface configuration — tailored for a specific topology but flexible enough for adaptation.
+# ⚙️ Network Automation 
 
-📂 Scripts
-ssh-router.py: For configuring routers.
+This repository provides a two-phase setup for automating Cisco network device configuration:
 
-ssh-switch.py: For configuring switches.
+1. **Python Console Scripts** – For initial setup and enabling SSH access via console cable.  
+2. **Ansible Playbooks** – For automating further configuration over SSH.
 
-⚙️ What the Scripts Do
-Access network devices over a console connection.
+Whether you're provisioning a lab or streamlining your production setup, this repo gets your devices online and Ansible-ready in minutes.
 
-Configure interface settings based on user input.
+---
 
-Automatically enable and configure SSH access.
+## 🐍 Phase 1: Python Console Setup
 
-Set hostnames, IP addresses, and more.
+These Python scripts are used to prepare **Cisco routers and switches** for automation by:
 
-Save the configuration to startup.
+- Configuring basic interfaces  
+- Setting hostnames  
+- Enabling and securing SSH access  
 
-⚠️ Important Note Before Running
-These scripts do not handle the initial configuration dialog that appears when a Cisco device is powered on for the first time.
-Before running either script:
+### 📁 Scripts
 
-Connect to the device using a console terminal (e.g., PuTTY, Tera Term, screen).
+- `ssh-switch.py` – Console-based config for switches  
+- `ssh-router.py` – Console-based config for routers
 
-When prompted with Would you like to enter the initial configuration dialog? [yes/no]:, type no.
+### 🚀 What It Does
 
-Then run the appropriate script.
+- Connects over a **console cable**
+- Prompts for:
+  - Interface name
+  - IP address / subnet
+  - Hostname
+  - SSH credentials
+- Applies configuration to enable basic connectivity and SSH
+- Saves the config to startup
 
-Skipping this step may cause the script to fail or behave unpredictably.
+### ⚠️ Important Setup Note
 
-🧑‍💻 Usage
-Connect to the router or switch via a console cable.
+These scripts **assume you're past the initial configuration dialog**. Before running:
 
-Run the appropriate script:
+1. Connect via terminal (e.g., PuTTY, minicom)
+2. When asked: Would you like to enter the initial configuration dialog? [yes/no]:
+3. Type "no"
+4. Wait until the CLI appears (`Switch>`, `Router>`), then run the script.
 
-bash
-Copy
-Edit
-python ssh-switch.py
-or
 
-bash
-Copy
-Edit
-python ssh-router.py
-Follow the prompts to enter IP addresses, interface names, and credentials.
-
-📦 Requirements
-Python 3.x
-
-pyserial (for serial/console communication)
-
-Possibly netmiko or similar (depending on script implementation)
-
-Install dependencies with:
-
-bash
-Copy
-Edit
-pip install pyserial
